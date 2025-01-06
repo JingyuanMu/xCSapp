@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ school }} - 院校简介</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='school.css') }}">
+</head>
+<body>
+    <div class="navbar">  
+        <h1>{{ school }}</h1>
+        <button id="homeButton" onclick="window.location.href='/'">xCS</button>
+    </div>
+
+    <div class="container">
+        <h2>院校简介：</h2>
+        <div id="school-info" class="school">
+            {% if school_info.description_manager %}
+                <pre>{{ school_info.description_manager }}</pre>
+            {% else %}
+                <p>暂无简介，您可以添加简介。</p>
+            {% endif %}
+        </div>
+
+        <button id="addButton">欢迎补充</button>
+
+        <!-- 添加表单 -->
+        <div id="admissions-form" >
+            <h3>录取数据：</h3>
+            <div class="admissions-display" >
+                <table>
+                    <thead>
+                        <tr>
+                            <th>结果</th>
+                            <th>录取时间</th>
+                            <th>本科</th>
+                            <th>本科院校</th>
+                            <th>GPA</th>
+                            <th>均分</th>
+                            <th>GRE</th>
+                            <th>工作经验</th>
+                            <th>牛推情况</th>
+                            <th>科研情况</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for admission in admissions %}
+                        <tr>
+                            <td>{{ admission.admission_status }}</td>
+                            <td>{{ admission.admission_date }}</td>
+                            <td>{{ admission.undergraduate_type }}/{{ admission.undergraduate_major }}</td>
+                            <td>{{ admission.undergraduate_school or '-' }}</td>
+                            <td>{{ admission.gpa }}/{{ admission.gpa_scale }}</td>
+                            <td>{{ admission.average_score }}</td>
+                            <td>{{ admission.gre or '-' }}</td>
+                            <td>{{ admission.work }}</td>
+                            <td>{{ admission.strong_recommendation }}</td>
+                            <td>{{ admission.has_paper }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="formContainer" style="display: none;">
+            <div id="formContent">
+                <button id="closeButton">关闭</button>
+                <form id="admissionForm" method="post" action="/{{ school }}">
+                    <label for="schoolName">项目说明补充:</label>
+                    <textarea id="project-description" name="description"></textarea>
+                    <button type="submit">提交</button>
+                </form>
+            </div>
+        </div>
+
+        <script>
+            // 获取按钮和表单容器
+            const addButton = document.getElementById('addButton');
+            const formContainer = document.getElementById('formContainer');
+            const closeButton = document.getElementById('closeButton');
+    
+            // 点击 "DP 上报" 按钮显示表单
+            addButton.addEventListener('click', () => {
+                formContainer.style.display = 'flex';
+            });
+    
+            // 点击 "关闭" 按钮隐藏表单
+            closeButton.addEventListener('click', () => {
+                formContainer.style.display = 'none';
+            });
+        </script>
+    </div>
+</body>
+</html>
